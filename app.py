@@ -135,6 +135,8 @@ print("--------------------------")
 def search(list):
 
     print("--------------------------")
+    print("Your diseases could be (translate in progress...) :")
+    print("--------------------------")
     diseases = []
 
     symptom = list[0].lower()
@@ -161,7 +163,6 @@ def search(list):
     return diseases
 
 
-print("Your diseases could be (translate in progress...) :")
-print("--------------------------")
+
 print(search(traduction(list_symptoms)))
 print("--------------------------")
