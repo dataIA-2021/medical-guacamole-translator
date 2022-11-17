@@ -83,16 +83,21 @@ else:
 
 
 def traduction(input):
+
     translator = pipeline(pipeline_name, model=model_name)
-    lang_origin = translator(input)
-    output = lang_origin[0]['translation_text']
+    lst_trad = []
 
-    print("\nLangue d'origine:")
-    print(input)
-    print('\nEnglish:')
-    print(lang_origin[0]['translation_text'])
+    for symptom in input:
 
-    return output
+        lang_origin = translator(symptom)
+        output = lang_origin[0]['translation_text']
+        print("\nLangue d'origine:")
+        print(input)
+        print('\nEnglish:')
+        lst_trad.append(lang_origin[0]['translation_text'])
+        print(lst_trad)
+    
+    return lst_trad
 
 
 text = speak_into_microphone(question,language)
@@ -124,20 +129,39 @@ print("--------------------------")
 print("The doctor's answer will arrive in a few moments... The cost of the consultation is 100 euros. Thank you for waiting")
 print("--------------------------")
 print("--------------------------")
-print("PLEASE, DON'T FORGET TO INSERT YOUR CREDIT CARD ! Thank you for choosing our service")
+print("PLEASE, DON'T FORGET TO INSERT YOUR CREDIT CARD ! Thank you for choosing our service :)")
 print("--------------------------")
 
-trad = traduction(" ".join(list_symptoms))
+def search(list):
 
-print("Your disease is :")
-print(df[df['symptoms'].str.contains(trad)])
+    print("--------------------------")
+    diseases = []
+
+    symptom = list[0].lower()
+    diseases_found = df["1"][df["symptoms"].str.contains(symptom) == True].tolist()
+
+    # Ajout des maladies dans la liste
+    for disease_found in diseases_found:
+        if disease_found not in diseases:
+            diseases.append(disease_found)
+
+    i=1
+    for i in range(len(list)):
+        symptom = list[i].lower()
+        diseases_found = df["1"][df["symptoms"].str.contains(symptom) == True].tolist()
+
+        # alcoolic
+        new_diseases = []
+        for disease_found in diseases_found:
+            if disease_found in diseases:
+                new_diseases.append(disease_found)
+
+        diseases = new_diseases
+
+    return diseases
 
 
-list = [
-    "Depression",
-    "Alcoolic"
-]
-
-
-df["symptoms"] = "anxiety and nervousness depression shortness of breath depressive or psychotic symptoms"
-df["symptoms"] = "alcoolic prerson nervours"  
+print("Your diseases could be (translate in progress...) :")
+print("--------------------------")
+print(search(traduction(list_symptoms)))
+print("--------------------------")
