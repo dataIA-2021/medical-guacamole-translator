@@ -6,7 +6,7 @@ import re
 
 from transformers import pipeline
 
-diseaseFound = False
+is_adding_symptoms = True
 list_symptoms = []
 
 # Import data
@@ -36,38 +36,7 @@ df.drop(["2","4","6","8"],inplace=True,axis=1)
 
 df["symptoms"] = df["symptoms"].str.lower()
 
-# Choix de l'utilisateur
-print("What is your language (fr = french, es = spain) ?")
-choice = str(input())
-
-if choice == "fr":
-    language = "fr-FR"
-    pipeline_name = "translation_fr_to_en"
-    model_name = "Helsinki-NLP/opus-mt-fr-en"
-    question = "Quels sont vos symptômes ?"
-    repeat_question = "Voulez-vous rajouter un symptôme ?"
-    
-else:
-    language = "es-ES"
-    model_name = "Helsinki-NLP/opus-mt-es-en"
-    question = "Cuales son sus sintomas ?"
-    pipeline_name = "translation_es_to_en"
-    repeat_question = ""
-
-
-def traduction(input):
-    translator = pipeline(pipeline_name, model=model_name)
-    lang_origin = translator(input)
-    output = lang_origin[0]['translation_text']
-
-    print("\nLangue d'origine:")
-    print(text)
-    print('\nEnglish:')
-    print(lang_origin[0]['translation_text'])
-
-    return output
-
-def speak_into_microphone(question):
+def speak_into_microphone(question,language="en-US"):
     # Prise de la voix
     r = sr.Recognizer()
     print("--------------------------------------")
@@ -91,23 +60,69 @@ def speak_into_microphone(question):
 
     return text
 
-i=0
-while i < 4:
+# Choix de l'utilisateur
+text = speak_into_microphone("What is your language (say 'french' or 'spain') ?")
 
-    list_symptoms.append(text)
+if text == "French":
+    language = "fr-FR"
+    pipeline_name = "translation_fr_to_en"
+    model_name = "Helsinki-NLP/opus-mt-fr-en"
+    question = "Quels sont vos symptômes ?"
+    repeat_question = "Voulez-vous rajouter un symptôme ?"
+    positive_answer = "oui"
+    negative_answer = "non"
+    
+else:
+    language = "es-ES"
+    model_name = "Helsinki-NLP/opus-mt-es-en"
+    question = "Cuales son sus sintomas ?"
+    pipeline_name = "translation_es_to_en"
+    repeat_question = ""
+    positive_answer = "si"
+    negative_answer = "no"
+
+
+def traduction(input):
+    translator = pipeline(pipeline_name, model=model_name)
+    lang_origin = translator(input)
+    output = lang_origin[0]['translation_text']
+
+    print("\nLangue d'origine:")
+    print(input)
+    print('\nEnglish:')
+    print(lang_origin[0]['translation_text'])
+
+    return output
+
+
+text = speak_into_microphone(question,language)
+list_symptoms.append(text)
+print("--------------------------")
+print(list_symptoms)
+print("--------------------------")
+
+while is_adding_symptoms:
+
     print("--------------------------")
-    print(list_symptoms)
+    choice = speak_into_microphone(repeat_question + " " + positive_answer + " ?" + " " + negative_answer + " ?",language)
     print("--------------------------")
 
-    i = i + 1
+    if choice == positive_answer:
+
+        text = speak_into_microphone(repeat_question,language)
+
+        list_symptoms.append(text)
+        print("--------------------------")
+        print(list_symptoms)
+        print("--------------------------")
+
+    else:
+        is_adding_symptoms = False
 
 
-"""
-Ansiedad y nerviosismo
-Depresión
-Dificultad para respirar
-Síntomas depresivos o psicóticos
-"""
+print("--------------------------")
+print("The doctor's answer will arrive in a few moments... The cost of the consultation is 100 euros. Thank you for waiting")
+print("--------------------------")
 
 trad = traduction(" ".join(list_symptoms))
 
