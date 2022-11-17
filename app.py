@@ -47,11 +47,11 @@ def speak_into_microphone(question,language="en-US"):
     try:
         text = r.recognize_google(audio, language=language)
         print("--------------------------------------")
-        print("J'ai entendu :", text)
+        print("I heard :", text)
         print("--------------------------------------")
     except sr.UnknownValueError:
         print("--------------------------")
-        print("J'ai rien compris")
+        print("I don't understand")
         print("--------------------------")
     except sr.RequestError as e:
         print("--------------------------")
@@ -61,6 +61,8 @@ def speak_into_microphone(question,language="en-US"):
     return text
 
 # Choix de l'utilisateur
+print("--------------------------------------")
+print("Hello, I am Sofia, your personal medical assistant")
 text = speak_into_microphone("What is your language (say 'french' or 'spain') ?")
 
 if text == "French":
@@ -84,6 +86,7 @@ else:
 
 def traduction(input):
 
+    print("\ntranslate in progress...")
     translator = pipeline(pipeline_name, model=model_name)
     lst_trad = []
 
@@ -129,14 +132,13 @@ print("--------------------------")
 print("The doctor's answer will arrive in a few moments... The cost of the consultation is 100 euros. Thank you for waiting")
 print("--------------------------")
 print("--------------------------")
-print("PLEASE, DON'T FORGET TO INSERT YOUR CREDIT CARD ! Thank you for choosing our service :)")
+print("PLEASE, DON'T FORGET TO INSERT YOUR CREDIT CARD ! Thank you for choosing our service :) (You can also pay with kebabcoin, contact support IT Victorien for this)")
 print("--------------------------")
 
 def search(list):
 
     print("--------------------------")
-    print("Your diseases could be (translate in progress...) :")
-    print("--------------------------")
+    print("Your diseases could be :")
     diseases = []
 
     symptom = list[0].lower()
@@ -161,7 +163,6 @@ def search(list):
         diseases = new_diseases
 
     return diseases
-
 
 
 print(search(traduction(list_symptoms)))
