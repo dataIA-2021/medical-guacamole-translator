@@ -119,13 +119,25 @@ while is_adding_symptoms:
     else:
         is_adding_symptoms = False
 
-
+# Paiement
 print("--------------------------")
 print("The doctor's answer will arrive in a few moments... The cost of the consultation is 100 euros. Thank you for waiting")
+print("--------------------------")
+print("--------------------------")
+print("PLEASE, DON'T FORGET TO INSERT YOUR CREDIT CARD ! Thank you for choosing our service")
 print("--------------------------")
 
 trad = traduction(" ".join(list_symptoms))
 
 print("Your disease is :")
 print(df[df['symptoms'].str.contains(trad)])
-    
+
+
+list = [
+    "Depression",
+    "Alcoolic"
+]
+
+
+df["symptoms"] = "anxiety and nervousness depression shortness of breath depressive or psychotic symptoms"
+df["symptoms"] = "alcoolic prerson nervours"  
